@@ -15,7 +15,7 @@
     <header class="header">
         <div class="container">
             <div class="nav-brand">
-                <h1 class="logo" id="admin-logo" style="cursor: pointer;">📖 Bíblia Flix</h1>
+                <h1 class="logo">📖 Bíblia Flix</h1>
             </div>
             <nav class="nav-menu">
                 <ul>
@@ -348,7 +348,7 @@
             <div class="feedback-box">
                 <h3 class="feedback-title">💬 Compartilhe Seu Feedback</h3>
                 <p class="feedback-description">Sua opinião é muito importante! Nos ajude a melhorar este projeto compartilhando suas sugestões e comentários.</p>
-                <form class="feedback-form" id="feedback-form">
+                <form class="feedback-form" id="feedback-form" action="https://formspree.io/f/xyzgwzpd" method="POST">
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Seu nome" required>
                     </div>
@@ -358,6 +358,8 @@
                     <div class="form-group">
                         <textarea name="message" placeholder="Sua mensagem ou sugestão..." rows="4" required></textarea>
                     </div>
+                    <input type="hidden" name="_next" value="https://danieldfs13.github.io/bibliafix2026-/">
+                    <input type="hidden" name="_captcha" value="false">
                     <button type="submit" class="feedback-btn">Enviar Feedback</button>
                 </form>
                 <p class="feedback-note">Seus dados serão utilizados apenas para responder seu feedback.</p>
@@ -376,27 +378,6 @@
         </div>
     </footer>
 
-    <!-- Painel Administrativo -->
-    <div id="admin-panel" class="admin-panel">
-        <h3>📊 Painel Admin</h3>
-        <div class="admin-stats">
-            <div class="stat-item">
-                <p>Total de Visitantes:</p>
-                <strong id="admin-visitor-count">0</strong>
-            </div>
-            <div class="stat-item">
-                <p>Total de Feedbacks:</p>
-                <strong id="admin-feedback-count">0</strong>
-            </div>
-        </div>
-        <h4 style="color: #FF6B6B; margin-top: 20px; margin-bottom: 10px; font-size: 1rem;">Feedbacks Recebidos:</h4>
-        <div class="feedbacks-list" id="feedbacks-list">
-            <p style="color: #999; text-align: center;">Nenhum feedback ainda</p>
-        </div>
-        <button class="admin-close-btn" onclick="toggleAdminPanel()">Fechar</button>
-    </div>
-
     <script src="script.js"></script>
-    <script src="admin_functions.js"></script>
 </body>
 </html>
