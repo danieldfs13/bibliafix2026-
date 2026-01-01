@@ -1,4 +1,43 @@
-// Dados das histórias com links do YouTube
+
+    modal.style.display = 'none';
+    videoFrame.src = '';
+    document.body.style.overflow = 'auto';
+}
+
+// Fechar modal ao clicar fora
+window.onclick = function(event) {
+        if (event.target == modal) {
+                    closeModal();
+        }
+}
+
+// Adicionar/remover favoritos
+function toggleFavorite(btn) {
+        const card = btn.closest('.story-card');
+        const storyId = card.getAttribute('data-story');
+        
+        if (favorites.includes(storyId)) {
+                    favorites = favorites.filter(id => id !== storyId);
+                    btn.textContent = '🤍';
+        } else {
+                    favorites.push(storyId);
+                    btn.textContent = '❤️';
+        }
+        
+        localStorage.setItem('bibliaFlixFavorites', JSON.stringify(favorites));
+        updateFavoritesSection();
+}
+
+// Adicionar favorito do modal
+function toggleFavoriteFromModal() {
+        const btn = document.getElementById('modal-favorite-btn');
+        
+        if (favorites.includes(currentStoryId)) {
+                    favorites = favorites.filter(id => id !== currentStoryId);
+                    btn.textContent = '🤍 Adicionar aos Favoritos';
+        } else {
+                    favorites.push(currentStoryId);
+                    btn.textContent = '❤️ Remov// Histórias com IDs do YouTube
 const stories = {
     'moises': {
         title: 'Moisés e o Mar Vermelho',
@@ -72,147 +111,46 @@ const stories = {
     }
 };
 
-// Progresso das histórias (armazenado no localStorage)
-let watchProgress = JSON.parse(localStorage.getItem('bibliaFlixProgress')) || {
-    'moises': 0,
-    'davi': 0,
-    'noe': 0,
-    'adao-eva': 0,
-    'jonas': 0,
-    'daniel': 0,
-    'jose': 0,
-    'nascimento-jesus': 0,
-    'jesus-criancas': 0,
-    'multiplicacao-paes': 0
-};
+// Progresso das histórias
+let watchProgress = JSON.parse(localStorage.getItem('bibliaFlixProgress')) || {};
 
-// Favoritos (armazenado no localStorage)
+// Favoritos
 let favorites = JSON.parse(localStorage.getItem('bibliaFlixFavorites')) || [];
 
 // Elementos DOM
 const modal = document.getElementById('video-modal');
-const youtubePlayer = document.getElementById('youtube-player');
+const videoFrame = document.getElementById('story-video');
 const videoTitle = document.getElementById('video-title');
 const videoDescription = document.getElementById('video-description');
 const closeBtn = document.querySelector('.close-btn');
-const favoriteBtn = document.getElementById('favorite-btn');
 
-// Estado atual do player
+// Estado atual
 let currentStoryId = null;
 
-// Inicialização
+// Inicializar
 document.addEventListener('DOMContentLoaded', function() {
     initializeStoryCards();
-    initializeNavigation();
-    initializeModal();
-    updateProgressBars();
-    initializeBookFilters();
     updateFavoritesSection();
+    updateVisitCounter();
+    setupFeedbackForm();
 });
 
-// Inicializar cards das histórias
+// Inicializar cards de histórias
 function initializeStoryCards() {
     const storyCards = document.querySelectorAll('.story-card');
     
     storyCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const storyId = this.getAttribute('data-story');
-            openStoryModal(storyId);
-        });
-        
-        // Adicionar efeito hover
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px) scale(1.02)';
-            
-            // Mostrar overlay de play
-            const playOverlay = this.querySelector('.play-overlay');
-            if (playOverlay) {
-                playOverlay.style.opacity = '1';
-            }
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-            
-            const playOverlay = this.querySelector('.play-overlay');
-            if (playOverlay) {
-                playOverlay.style.opacity = '0';
+        card.addEventListener('click', function(e) {
+            // Não abrir modal se clicou no botão de favorito
+            if (e.target.className !== 'favorite-btn') {
+                const storyId = this.getAttribute('data-story');
+                openStoryModal(storyId);
             }
         });
     });
 }
 
-// Inicializar navegação
-function initializeNavigation() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remover classe active de todos os links
-            navLinks.forEach(l => l.classList.remove('active'));
-            
-            // Adicionar classe active ao link clicado
-            this.classList.add('active');
-            
-            // Scroll suave para a seção
-            const targetId = this.getAttribute('href').substring(1);
-            scrollToSection(targetId);
-        });
-    });
-}
-
-// Inicializar filtros de livros
-function initializeBookFilters() {
-    const bookFilters = document.querySelectorAll('.book-filter');
-    
-    bookFilters.forEach(filter => {
-        filter.addEventListener('click', function() {
-            const book = this.getAttribute('data-book');
-            const container = this.closest('.content-section');
-            
-            // Remover classe active de todos os botões
-            container.querySelectorAll('.book-filter').forEach(btn => btn.classList.remove('active'));
-            
-            // Adicionar classe active ao botão clicado
-            this.classList.add('active');
-            
-            // Filtrar seções de livros
-            const bookSections = container.querySelectorAll('.book-section');
-            bookSections.forEach(section => {
-                const sectionBook = section.getAttribute('data-book');
-                if (book === 'all' || sectionBook === book) {
-                    section.style.display = 'block';
-                } else {
-                    section.style.display = 'none';
-                }
-            });
-        });
-    });
-}
-
-// Inicializar modal
-function initializeModal() {
-    // Fechar modal ao clicar no X
-    closeBtn.addEventListener('click', closeModal);
-    
-    // Fechar modal ao clicar fora do conteúdo
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-    
-    // Fechar modal com ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.style.display === 'block') {
-            closeModal();
-        }
-    });
-}
-
-// Abrir modal da história
+// Abrir modal com vídeo
 function openStoryModal(storyId) {
     const story = stories[storyId];
     if (!story) return;
@@ -222,105 +160,74 @@ function openStoryModal(storyId) {
     videoTitle.textContent = story.title;
     videoDescription.textContent = story.description;
     
-    // Construir URL do YouTube com autoplay
-    const youtubeUrl = `https://www.youtube.com/embed/${story.youtubeId}?autoplay=1&rel=0&modestbranding=1`;
-    youtubePlayer.src = youtubeUrl;
-    
-    // Atualizar botão de favoritos
-    updateFavoriteButton();
-    
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    
-    // Adicionar animação de entrada
-    modal.style.opacity = '0';
-    setTimeout(() => {
-        modal.style.opacity = '1';
-    }, 10);
+    // Abrir vídeo do YouTube em uma nova aba
+    const youtubeUrl = `https://www.youtube.com/watch?v=${story.youtubeId}`;
+    window.open(youtubeUrl, '_blank');
     
     // Marcar como assistida
     watchProgress[storyId] = 100;
-    saveProgress();
-    updateProgressBars();
+    localStorage.setItem('bibliaFlixProgress', JSON.stringify(watchProgress));
+    
+    // Mostrar modal com informações da história
+    updateFavoriteButton();
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
 
 // Fechar modal
 function closeModal() {
-    modal.style.opacity = '0';
-    setTimeout(() => {
-        modal.style.display = 'none';
-        youtubePlayer.src = '';
-        currentStoryId = null;
-        document.body.style.overflow = 'auto';
-    }, 300);
+    modal.style.display = 'none';
+    videoFrame.src = '';
+    document.body.style.overflow = 'auto';
 }
 
-// Scroll suave para seção
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        const headerHeight = document.querySelector('.header').offsetHeight;
-        const targetPosition = section.offsetTop - headerHeight - 20;
-        
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
+// Fechar modal ao clicar fora
+window.onclick = function(event) {
+    if (event.target == modal) {
+        closeModal();
     }
 }
 
-// Atualizar barras de progresso
-function updateProgressBars() {
-    const storyCards = document.querySelectorAll('.story-card');
+// Adicionar/remover favoritos
+function toggleFavorite(btn) {
+    const card = btn.closest('.story-card');
+    const storyId = card.getAttribute('data-story');
     
-    storyCards.forEach(card => {
-        const storyId = card.getAttribute('data-story');
-        const progress = watchProgress[storyId] || 0;
-        const progressFill = card.querySelector('.progress-fill');
-        
-        if (progressFill) {
-            progressFill.style.width = progress + '%';
-        }
-        
-        // Adicionar classe 'watched' se assistida
-        if (progress >= 80) {
-            card.classList.add('watched');
-        }
-    });
-}
-
-// Salvar progresso no localStorage
-function saveProgress() {
-    localStorage.setItem('bibliaFlixProgress', JSON.stringify(watchProgress));
-}
-
-// Alternar favorito
-function toggleFavorite() {
-    if (!currentStoryId) return;
-    
-    const index = favorites.indexOf(currentStoryId);
-    if (index > -1) {
-        favorites.splice(index, 1);
+    if (favorites.includes(storyId)) {
+        favorites = favorites.filter(id => id !== storyId);
+        btn.textContent = '🤍';
     } else {
-        favorites.push(currentStoryId);
+        favorites.push(storyId);
+        btn.textContent = '❤️';
     }
     
     localStorage.setItem('bibliaFlixFavorites', JSON.stringify(favorites));
-    updateFavoriteButton();
     updateFavoritesSection();
 }
 
-// Atualizar botão de favoritos
-function updateFavoriteButton() {
-    if (!currentStoryId) return;
+// Adicionar favorito do modal
+function toggleFavoriteFromModal() {
+    const btn = document.getElementById('modal-favorite-btn');
     
-    const isFavorite = favorites.includes(currentStoryId);
-    if (isFavorite) {
-        favoriteBtn.textContent = '❤️ Remover dos Favoritos';
-        favoriteBtn.style.background = 'linear-gradient(45deg, #FF6B6B, #FF4757)';
+    if (favorites.includes(currentStoryId)) {
+        favorites = favorites.filter(id => id !== currentStoryId);
+        btn.textContent = '🤍 Adicionar aos Favoritos';
     } else {
-        favoriteBtn.textContent = '🤍 Adicionar aos Favoritos';
-        favoriteBtn.style.background = 'linear-gradient(45deg, #4ECDC4, #44A08D)';
+        favorites.push(currentStoryId);
+        btn.textContent = '❤️ Remover dos Favoritos';
+    }
+    
+    localStorage.setItem('bibliaFlixFavorites', JSON.stringify(favorites));
+    updateFavoritesSection();
+}
+
+// Atualizar botão de favoritos no modal
+function updateFavoriteButton() {
+    const btn = document.getElementById('modal-favorite-btn');
+    if (favorites.includes(currentStoryId)) {
+        btn.textContent = '❤️ Remover dos Favoritos';
+    } else {
+        btn.textContent = '🤍 Adicionar aos Favoritos';
     }
 }
 
@@ -329,7 +236,7 @@ function updateFavoritesSection() {
     const favoritesGrid = document.getElementById('favorites-grid');
     
     if (favorites.length === 0) {
-        favoritesGrid.innerHTML = '<p style="text-align: center; color: #999; grid-column: 1 / -1;">Você ainda não tem histórias favoritas. Clique no coração para adicionar!</p>';
+        favoritesGrid.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Nenhuma história favoritada ainda. Clique no coração para adicionar!</p>';
         return;
     }
     
@@ -339,32 +246,14 @@ function updateFavoritesSection() {
         const story = stories[storyId];
         if (!story) return;
         
-        // Encontrar a imagem correspondente
-        let imageName = '';
-        switch(storyId) {
-            case 'adao-eva': imageName = 'adao_eva_animacao.png'; break;
-            case 'noe': imageName = 'arca_noe_animacao.png'; break;
-            case 'jose': imageName = 'jose_egito_animacao.png'; break;
-            case 'moises': imageName = 'moises_mar_vermelho_animacao.png'; break;
-            case 'davi': imageName = 'davi_golias_animacao.png'; break;
-            case 'daniel': imageName = 'daniel_leoes_animacao.png'; break;
-            case 'jonas': imageName = 'jonas_baleia_animacao.png'; break;
-            case 'nascimento-jesus': imageName = 'nascimento_jesus_animacao.png'; break;
-            case 'jesus-criancas': imageName = 'jesus_criancas_animacao.png'; break;
-            case 'multiplicacao-paes': imageName = 'multiplicacao_paes_animacao.png'; break;
-        }
-        
         const card = document.createElement('div');
         card.className = 'story-card';
         card.setAttribute('data-story', storyId);
         card.innerHTML = `
             <div class="story-image">
-                <img src="${imageName}" alt="${story.title}">
+                <img src="${getImageForStory(storyId)}" alt="${story.title}">
                 <div class="play-overlay">
                     <div class="play-button">▶️</div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${watchProgress[storyId] || 0}%"></div>
                 </div>
             </div>
             <div class="story-info">
@@ -373,262 +262,119 @@ function updateFavoritesSection() {
                 <span class="story-duration">${story.duration}</span>
                 <span class="story-book">${story.book}</span>
             </div>
+            <button class="favorite-btn" onclick="toggleFavorite(this)">❤️</button>
         `;
         
-        card.addEventListener('click', function() {
-            openStoryModal(storyId);
-        });
-        
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px) scale(1.02)';
-            const playOverlay = this.querySelector('.play-overlay');
-            if (playOverlay) playOverlay.style.opacity = '1';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-            const playOverlay = this.querySelector('.play-overlay');
-            if (playOverlay) playOverlay.style.opacity = '0';
+        card.addEventListener('click', function(e) {
+            if (e.target.className !== 'favorite-btn') {
+                openStoryModal(storyId);
+            }
         });
         
         favoritesGrid.appendChild(card);
     });
 }
 
-// Analytics simulado
-function trackVideoStart(storyId) {
-    console.log(`Vídeo iniciado: ${stories[storyId].title}`);
+// Obter imagem da história
+function getImageForStory(storyId) {
+    const imageMap = {
+        'moises': 'moises_mar_vermelho_animacao.png',
+        'davi': 'davi_golias_animacao.png',
+        'noe': 'arca_noe_animacao.png',
+        'adao-eva': 'adao_eva_animacao.png',
+        'jonas': 'jonas_baleia_animacao.png',
+        'daniel': 'daniel_leoes_animacao.png',
+        'jose': 'jose_egito_animacao.png',
+        'nascimento-jesus': 'nascimento_jesus_animacao.png',
+        'jesus-criancas': 'jesus_criancas_animacao.png',
+        'multiplicacao-paes': 'multiplicacao_paes_animacao.png'
+    };
+    return imageMap[storyId] || 'biblia_infantil.jpg';
+}
+
+// Compartilhar história
+function shareStory() {
+    const story = stories[currentStoryId];
+    const text = `Assista "${story.title}" em Bíblia Flix! https://danieldfs13.github.io/bibliafix2026-/`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Bíblia Flix',
+            text: text
+        });
+    } else {
+        alert('Compartilhe: ' + text);
+    }
 }
 
 // Copiar chave PIX
 function copyPixKey() {
-    const pixKey = '31994680477';
+    const pixKey = document.getElementById('pix-key-text').textContent;
     navigator.clipboard.writeText(pixKey).then(() => {
-        const btn = document.querySelector('.copy-pix-btn');
-        const originalText = btn.textContent;
-        btn.textContent = '✓ Copiado!';
-        btn.style.background = '#4ECDC4';
+        alert('Chave PIX copiada com sucesso!');
+    });
+}
+
+// Alternar player de louvores
+function toggleLouvorPlayer() {
+    const player = document.getElementById('louvor-player');
+    if (player.style.display === 'none') {
+        player.style.display = 'block';
+    } else {
+        player.style.display = 'none';
+    }
+}
+
+// Configurar formulário de feedback
+function setupFeedbackForm() {
+    const form = document.getElementById('feedback-form');
+    const response = document.getElementById('feedback-response');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = '';
-        }, 2000);
-    }).catch(err => {
-        alert('Erro ao copiar. Chave PIX: 31994680477');
+        // Enviar via Formspree
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                form.reset();
+                response.style.display = 'block';
+                setTimeout(() => {
+                    response.style.display = 'none';
+                }, 3000);
+            }
+        });
     });
 }
 
+// Contador de visitantes
+function updateVisitCounter() {
+    let visits = parseInt(localStorage.getItem('bibliaFlixVisits')) || 0;
+    visits++;
+    localStorage.setItem('bibliaFlixVisits', visits);
+    document.getElementById('visit-counter').textContent = visits;
+}
 
-// Inicializar contador de visitas
-function initVisitorCounter() {
-    let visitCount = localStorage.getItem('bibliaFlixVisitors') || 0;
-    visitCount = parseInt(visitCount) + 1;
-    localStorage.setItem('bibliaFlixVisitors', visitCount);
-    
-    const counterElement = document.getElementById('visitor-count');
-    if (counterElement) {
-        counterElement.textContent = visitCount;
+// Scroll suave
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
-// Executar ao carregar a página
-document.addEventListener('DOMContentLoaded', function() {
-    initVisitorCounter();
-});
-
-
-
-
-// Versículos do Dia
-const dailyVerses = [
-    { text: "\"Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele creia não pereça, mas tenha a vida eterna.\"", reference: "João 3:16" },
-    { text: "\"Confie no Senhor de todo o seu coração e não se apoie em seu próprio entendimento.\"", reference: "Provérbios 3:5" },
-    { text: "\"Porque nele vivemos, nos movemos e existimos, como também alguns dos vossos poetas disseram: Pois somos também sua geração.\"", reference: "Atos 17:28" },
-    { text: "\"Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.\"", reference: "Mateus 11:28" },
-    { text: "\"Porque o Senhor é bom; a sua misericórdia dura para sempre, e a sua fidelidade por todas as gerações.\"", reference: "Salmos 100:5" },
-    { text: "\"Mas a graça do Senhor Jesus Cristo, e o amor de Deus, e a comunhão do Espírito Santo sejam com todos vós.\"", reference: "2 Coríntios 13:14" },
-    { text: "\"Portanto, meus amados irmãos, sede firmes, inabaláveis, sempre abundantes na obra do Senhor, sabendo que o vosso trabalho não é vão no Senhor.\"", reference: "1 Coríntios 15:58" },
-    { text: "\"Porque Deus não nos deu espírito de covardia, mas de poder, de amor e de moderação.\"", reference: "2 Timóteo 1:7" }
-];
-
-// Inicializar Versículo do Dia
-function initDailyVerse() {
-    const today = new Date().getDate();
-    const verseIndex = today % dailyVerses.length;
-    const verse = dailyVerses[verseIndex];
-    
-    const verseElement = document.getElementById('daily-verse');
-    const referenceElement = document.getElementById('verse-reference');
-    
-    if (verseElement) {
-        verseElement.textContent = verse.text;
-    }
-    if (referenceElement) {
-        referenceElement.textContent = verse.reference;
-    }
-}
-
-// Copiar Link para Compartilhamento
-function copyLink() {
-    const link = "https://danieldfs13.github.io/bibliafix2026-/";
-    navigator.clipboard.writeText(link).then(() => {
-        alert("Link copiado para a área de transferência! 📋");
-    }).catch(() => {
-        alert("Não foi possível copiar o link. Tente novamente.");
-    });
-}
-
-// Baixar Páginas para Colorir
-function downloadColoringPages() {
-    alert("Em breve! Estamos preparando um PDF com desenhos bíblicos para colorir. Volte em breve! 🎨");
-    // Aqui você pode adicionar um link para download de um PDF
-}
-
-// Imprimir Histórias
-function printStories() {
-    alert("Em breve! Estamos preparando um formato de livro para impressão. Volte em breve! 🖨️");
-    // Aqui você pode adicionar a funcionalidade de impressão
-}
-
-// Executar ao carregar a página
-document.addEventListener('DOMContentLoaded', function() {
-    initVisitorCounter();
-    initDailyVerse();
-});
-
-
-// ===== QUIZ E GALERIAS =====
-
-// Quiz Functions
-function openQuiz() {
-    const modal = document.getElementById('quiz-modal');
-    modal.classList.add('show');
-}
-
-function closeQuiz() {
-    const modal = document.getElementById('quiz-modal');
-    modal.classList.remove('show');
-    document.getElementById('quiz-feedback').innerHTML = '';
-    document.querySelectorAll('.quiz-option').forEach(btn => {
-        btn.classList.remove('correct', 'incorrect');
-        btn.disabled = false;
-    });
-}
-
-function checkAnswer(button, isCorrect) {
-    const feedback = document.getElementById('quiz-feedback');
-    const options = document.querySelectorAll('.quiz-option');
-    
-    options.forEach(btn => btn.disabled = true);
-    
-    if (isCorrect) {
-        button.classList.add('correct');
-        feedback.innerHTML = '✅ Parabéns! Você acertou!';
-        feedback.classList.add('success');
-    } else {
-        button.classList.add('incorrect');
-        feedback.innerHTML = '❌ Que pena! Tente novamente.';
-        feedback.classList.add('error');
-    }
-}
-
-// Coloring Gallery Functions
-function openColoringGallery() {
-    const modal = document.getElementById('coloring-modal');
-    modal.classList.add('show');
-}
-
-function closeColoringGallery() {
-    const modal = document.getElementById('coloring-modal');
-    modal.classList.remove('show');
-}
-
-// Print Gallery Functions
-function openPrintGallery() {
-    const modal = document.getElementById('print-modal');
-    modal.classList.add('show');
-}
-
-function closePrintGallery() {
-    const modal = document.getElementById('print-modal');
-    modal.classList.remove('show');
-}
-
-// Close modals when clicking outside
-window.onclick = function(event) {
-    const quizModal = document.getElementById('quiz-modal');
-    const coloringModal = document.getElementById('coloring-modal');
-    const printModal = document.getElementById('print-modal');
-    
-    if (event.target === quizModal) {
-        closeQuiz();
-    }
-    if (event.target === coloringModal) {
-        closeColoringGallery();
-    }
-    if (event.target === printModal) {
-        closePrintGallery();
-    }
-}
-
-
-// ===== FEEDBACK COM AJAX =====
-function submitFeedback(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById('feedback-name').value;
-    const email = document.getElementById('feedback-email').value;
-    const message = document.getElementById('feedback-message').value;
-    const responseDiv = document.getElementById('feedback-response');
-    
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('message', message);
-    
-    fetch('https://formspree.io/f/mgovoydn', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
+// Navegação suave
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
         }
-    })
-    .then(response => {
-        if (response.ok) {
-            responseDiv.innerHTML = '✅ Feedback enviado com sucesso! Obrigado por sua mensagem.';
-            responseDiv.classList.add('success');
-            document.getElementById('feedback-form').reset();
-            setTimeout(() => {
-                responseDiv.innerHTML = '';
-                responseDiv.classList.remove('success');
-            }, 5000);
-        } else {
-            responseDiv.innerHTML = '❌ Erro ao enviar feedback. Tente novamente.';
-            responseDiv.classList.add('error');
-        }
-    })
-    .catch(error => {
-        responseDiv.innerHTML = '❌ Erro ao enviar feedback. Tente novamente.';
-        responseDiv.classList.add('error');
     });
-}
-
-// ===== PLAYER DE LOUVORES =====
-let praisePlayerOpen = false;
-
-function togglePraisePlayer() {
-    const player = document.getElementById('praise-player');
-    const button = document.getElementById('praise-toggle');
-    
-    praisePlayerOpen = !praisePlayerOpen;
-    
-    if (praisePlayerOpen) {
-        player.classList.remove('praise-player-hidden');
-        player.classList.add('praise-player-visible');
-        button.classList.add('active');
-    } else {
-        player.classList.remove('praise-player-visible');
-        player.classList.add('praise-player-hidden');
-        button.classList.remove('active');
-    }
-}
+});
