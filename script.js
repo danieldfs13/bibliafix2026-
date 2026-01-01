@@ -495,3 +495,78 @@ document.addEventListener('DOMContentLoaded', function() {
     initVisitorCounter();
     initDailyVerse();
 });
+
+
+// ===== QUIZ E GALERIAS =====
+
+// Quiz Functions
+function openQuiz() {
+    const modal = document.getElementById('quiz-modal');
+    modal.classList.add('show');
+}
+
+function closeQuiz() {
+    const modal = document.getElementById('quiz-modal');
+    modal.classList.remove('show');
+    document.getElementById('quiz-feedback').innerHTML = '';
+    document.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.classList.remove('correct', 'incorrect');
+        btn.disabled = false;
+    });
+}
+
+function checkAnswer(button, isCorrect) {
+    const feedback = document.getElementById('quiz-feedback');
+    const options = document.querySelectorAll('.quiz-option');
+    
+    options.forEach(btn => btn.disabled = true);
+    
+    if (isCorrect) {
+        button.classList.add('correct');
+        feedback.innerHTML = '✅ Parabéns! Você acertou!';
+        feedback.classList.add('success');
+    } else {
+        button.classList.add('incorrect');
+        feedback.innerHTML = '❌ Que pena! Tente novamente.';
+        feedback.classList.add('error');
+    }
+}
+
+// Coloring Gallery Functions
+function openColoringGallery() {
+    const modal = document.getElementById('coloring-modal');
+    modal.classList.add('show');
+}
+
+function closeColoringGallery() {
+    const modal = document.getElementById('coloring-modal');
+    modal.classList.remove('show');
+}
+
+// Print Gallery Functions
+function openPrintGallery() {
+    const modal = document.getElementById('print-modal');
+    modal.classList.add('show');
+}
+
+function closePrintGallery() {
+    const modal = document.getElementById('print-modal');
+    modal.classList.remove('show');
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const quizModal = document.getElementById('quiz-modal');
+    const coloringModal = document.getElementById('coloring-modal');
+    const printModal = document.getElementById('print-modal');
+    
+    if (event.target === quizModal) {
+        closeQuiz();
+    }
+    if (event.target === coloringModal) {
+        closeColoringGallery();
+    }
+    if (event.target === printModal) {
+        closePrintGallery();
+    }
+}
