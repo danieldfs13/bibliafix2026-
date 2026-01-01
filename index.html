@@ -331,10 +331,10 @@
     <section class="support-section">
         <div class="container">
             <div class="support-box">
-                <h3>💝 Apoie Este Projeto</h3>
-                <p>Se este projeto abençoa sua família e seus filhos, você pode apoiar para que ele continue gratuito e alcance mais crianças.</p>
+                <h3 class="support-title">💝 Apoie Este Projeto</h3>
+                <p class="support-description">Se este projeto abençoa sua família e seus filhos, você pode apoiar para que ele continue gratuito e alcance mais crianças.</p>
                 <div class="pix-info">
-                    <p><strong>Chave PIX:</strong></p>
+                    <p class="pix-label"><strong>Chave PIX:</strong></p>
                     <code class="pix-key">31994680477</code>
                     <button class="copy-pix-btn" onclick="copyPixKey()">📋 Copiar Chave</button>
                 </div>
@@ -346,8 +346,8 @@
     <section class="feedback-section">
         <div class="container">
             <div class="feedback-box">
-                <h3>📋 Envie Seu Feedback</h3>
-                <p>Sua opinião é muito importante! Nos ajude a melhorar este projeto compartilhando suas sugestões e comentários.</p>
+                <h3 class="feedback-title">💬 Compartilhe Seu Feedback</h3>
+                <p class="feedback-description">Sua opinião é muito importante! Nos ajude a melhorar este projeto compartilhando suas sugestões e comentários.</p>
                 <form class="feedback-form" id="feedback-form">
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Seu nome" required>
@@ -360,7 +360,7 @@
                     </div>
                     <button type="submit" class="feedback-btn">Enviar Feedback</button>
                 </form>
-                <p class="feedback-note" style="margin-top: 15px; font-size: 0.85rem; color: #999;">Seus dados serão utilizados apenas para responder seu feedback.</p>
+                <p class="feedback-note">Seus dados serão utilizados apenas para responder seu feedback.</p>
             </div>
         </div>
     </section>
@@ -375,6 +375,26 @@
             </div>
         </div>
     </footer>
+
+    <!-- Painel Administrativo -->
+    <div id="admin-panel" class="admin-panel">
+        <h3>📊 Painel Admin</h3>
+        <div class="admin-stats">
+            <div class="stat-item">
+                <p>Total de Visitantes:</p>
+                <strong id="admin-visitor-count">0</strong>
+            </div>
+            <div class="stat-item">
+                <p>Total de Feedbacks:</p>
+                <strong id="admin-feedback-count">0</strong>
+            </div>
+        </div>
+        <h4 style="color: #FF6B6B; margin-top: 20px; margin-bottom: 10px; font-size: 1rem;">Feedbacks Recebidos:</h4>
+        <div class="feedbacks-list" id="feedbacks-list">
+            <p style="color: #999; text-align: center;">Nenhum feedback ainda</p>
+        </div>
+        <button class="admin-close-btn" onclick="toggleAdminPanel()">Fechar</button>
+    </div>
 
     <script src="script.js"></script>
 </body>

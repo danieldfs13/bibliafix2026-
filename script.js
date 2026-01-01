@@ -485,3 +485,60 @@ document.addEventListener('DOMContentLoaded', function() {
     initVisitorCounter();
     initFeedbackForm();
 });
+
+
+// Painel Administrativo
+function toggleAdminPanel() {
+    const adminPanel = document.getElementById('admin-panel');
+    adminPanel.classList.toggle('open');
+    
+    if (adminPanel.classList.contains('open')) {
+        updateAdminPanel();
+    }
+}
+
+function updateAdminPanel() {
+    // Atualizar contadores
+    const visitCount = localStorage.getItem('bibliaFlixVisitors') || 0;
+    const feedbacks = JSON.parse(localStorage.getItem('bibliaFlixFeedbacks')) || [];
+    
+    document.getElementById('admin-visitor-count').textContent = visitCount;
+    document.getElementById('admin-feedback-count').textContent = feedbacks.length;
+    
+    // Atualizar lista de feedbacks
+    const feedbacksList = document.getElementById('feedbacks-list');
+    
+    if (feedbacks.length === 0) {
+        feedbacksList.innerHTML = '<p style="color: #999; text-align: center;">Nenhum feedback ainda</p>';
+    } else {
+        feedbacksList.innerHTML = feedbacks.map((feedback, index) => `
+            <div class="feedback-item">
+                <p><strong>Nome:</strong> ${feedback.name}</p>
+                <p><strong>Email:</strong> ${feedback.email}</p>
+                <p><strong>Mensagem:</strong> ${feedback.message}</p>
+                <p style="color: #666; font-size: 0.8rem;"><strong>Data:</strong> ${feedback.date}</p>
+            </div>
+        `).join('');
+    }
+}
+
+// Atalho para abrir o painel administrativo (Ctrl + Shift + A)
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+        event.preventDefault();
+        toggleAdminPanel();
+    }
+});
+
+// Atualizar painel quando um novo feedback é enviado
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('feedback-form');
+    if (form) {
+        const originalSubmit = form.onsubmit;
+        form.addEventListener('submit', function() {
+            setTimeout(() => {
+                updateAdminPanel();
+            }, 100);
+        });
+    }
+});
