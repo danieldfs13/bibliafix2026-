@@ -342,11 +342,37 @@
         </div>
     </section>
 
+    <!-- Seção de Feedback -->
+    <section class="feedback-section">
+        <div class="container">
+            <div class="feedback-box">
+                <h3>📋 Envie Seu Feedback</h3>
+                <p>Sua opinião é muito importante! Nos ajude a melhorar este projeto compartilhando suas sugestões e comentários.</p>
+                <form class="feedback-form" id="feedback-form">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Seu e-mail" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Sua mensagem ou sugestão..." rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="feedback-btn">Enviar Feedback</button>
+                </form>
+                <p class="feedback-note" style="margin-top: 15px; font-size: 0.85rem; color: #999;">Seus dados serão utilizados apenas para responder seu feedback.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2024 Bíblia Flix - Histórias Bíblicas para Crianças. Todos os direitos reservados.</p>
             <p style="font-size: 0.9rem; margin-top: 10px; color: #555;">Desenvolvido com ❤️ para crianças e famílias</p>
+            <div class="visitor-counter" style="margin-top: 15px; font-size: 0.8rem; color: #666;">
+                <span>Visitantes: <span id="visitor-count">0</span></span>
+            </div>
         </div>
     </footer>
 

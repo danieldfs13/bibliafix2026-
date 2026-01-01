@@ -417,3 +417,71 @@ function copyPixKey() {
         alert('Erro ao copiar. Chave PIX: 31994680477');
     });
 }
+
+
+// Inicializar contador de visitas
+function initVisitorCounter() {
+    let visitCount = localStorage.getItem('bibliaFlixVisitors') || 0;
+    visitCount = parseInt(visitCount) + 1;
+    localStorage.setItem('bibliaFlixVisitors', visitCount);
+    
+    const counterElement = document.getElementById('visitor-count');
+    if (counterElement) {
+        counterElement.textContent = visitCount;
+    }
+}
+
+// Inicializar formulário de feedback
+function initFeedbackForm() {
+    const form = document.getElementById('feedback-form');
+    if (!form) return;
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = form.querySelector('input[name="name"]').value;
+        const email = form.querySelector('input[name="email"]').value;
+        const message = form.querySelector('textarea[name="message"]').value;
+        
+        // Salvar feedback no localStorage
+        let feedbacks = JSON.parse(localStorage.getItem('bibliaFlixFeedbacks')) || [];
+        feedbacks.push({
+            name: name,
+            email: email,
+            message: message,
+            date: new Date().toLocaleString('pt-BR')
+        });
+        localStorage.setItem('bibliaFlixFeedbacks', JSON.stringify(feedbacks));
+        
+        // Mostrar mensagem de sucesso
+        const btn = form.querySelector('.feedback-btn');
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Feedback enviado com sucesso!';
+        btn.style.background = '#4ECDC4';
+        
+        // Limpar formulário
+        form.reset();
+        
+        // Restaurar botão
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+        }, 3000);
+        
+        // Enviar para Formspree (opcional - requer configuração)
+        // Você pode descomentar e configurar com seu endpoint do Formspree
+        /*
+        fetch('https://formspree.io/f/YOUR_FORM_ID', {
+            method: 'POST',
+            body: JSON.stringify({ name, email, message }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        */
+    });
+}
+
+// Executar ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    initVisitorCounter();
+    initFeedbackForm();
+});
