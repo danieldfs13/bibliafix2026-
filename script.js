@@ -121,9 +121,9 @@ function openStoryModal(storyId) {
     videoTitle.textContent = story.title;
     videoDescription.textContent = story.description;
     
-    // Abrir vídeo do YouTube em uma nova aba
-    const youtubeUrl = `https://www.youtube.com/watch?v=${story.youtubeId}`;
-    window.open(youtubeUrl, '_blank');
+    // Carregar vídeo do YouTube no iframe do modal
+    const embedUrl = `https://www.youtube.com/embed/${story.youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+    videoFrame.src = embedUrl;
     
     // Marcar como assistida
     watchProgress[storyId] = 100;
