@@ -1,43 +1,4 @@
-
-    modal.style.display = 'none';
-    videoFrame.src = '';
-    document.body.style.overflow = 'auto';
-}
-
-// Fechar modal ao clicar fora
-window.onclick = function(event) {
-        if (event.target == modal) {
-                    closeModal();
-        }
-}
-
-// Adicionar/remover favoritos
-function toggleFavorite(btn) {
-        const card = btn.closest('.story-card');
-        const storyId = card.getAttribute('data-story');
-        
-        if (favorites.includes(storyId)) {
-                    favorites = favorites.filter(id => id !== storyId);
-                    btn.textContent = '🤍';
-        } else {
-                    favorites.push(storyId);
-                    btn.textContent = '❤️';
-        }
-        
-        localStorage.setItem('bibliaFlixFavorites', JSON.stringify(favorites));
-        updateFavoritesSection();
-}
-
-// Adicionar favorito do modal
-function toggleFavoriteFromModal() {
-        const btn = document.getElementById('modal-favorite-btn');
-        
-        if (favorites.includes(currentStoryId)) {
-                    favorites = favorites.filter(id => id !== currentStoryId);
-                    btn.textContent = '🤍 Adicionar aos Favoritos';
-        } else {
-                    favorites.push(currentStoryId);
-                    btn.textContent = '❤️ Remov// Histórias com IDs do YouTube
+// Histórias com IDs do YouTube
 const stories = {
     'moises': {
         title: 'Moisés e o Mar Vermelho',
@@ -333,21 +294,36 @@ function setupFeedbackForm() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Enviar via Formspree
+        // Enviar via Formspree usando AJAX
         fetch(form.action, {
             method: 'POST',
             body: new FormData(form),
             headers: {
                 'Accept': 'application/json'
             }
-        }).then(response => {
-            if (response.ok) {
-                form.reset();
-                response.style.display = 'block';
-                setTimeout(() => {
-                    response.style.display = 'none';
-                }, 3000);
-            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Mostrar mensagem de sucesso
+            form.reset();
+            response.style.display = 'block';
+            response.style.background = '#4CAF50';
+            response.textContent = '✅ Obrigado! Seu feedback foi enviado com sucesso!';
+            
+            // Esconder mensagem após 3 segundos
+            setTimeout(() => {
+                response.style.display = 'none';
+            }, 3000);
+        })
+        .catch(error => {
+            // Mostrar mensagem de erro
+            response.style.display = 'block';
+            response.style.background = '#f44336';
+            response.textContent = '❌ Erro ao enviar feedback. Tente novamente!';
+            
+            setTimeout(() => {
+                response.style.display = 'none';
+            }, 3000);
         });
     });
 }
