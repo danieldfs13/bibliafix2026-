@@ -399,3 +399,21 @@ function updateFavoritesSection() {
 function trackVideoStart(storyId) {
     console.log(`Vídeo iniciado: ${stories[storyId].title}`);
 }
+
+// Copiar chave PIX
+function copyPixKey() {
+    const pixKey = '31994680477';
+    navigator.clipboard.writeText(pixKey).then(() => {
+        const btn = document.querySelector('.copy-pix-btn');
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Copiado!';
+        btn.style.background = '#4ECDC4';
+        
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+        }, 2000);
+    }).catch(err => {
+        alert('Erro ao copiar. Chave PIX: 31994680477');
+    });
+}
