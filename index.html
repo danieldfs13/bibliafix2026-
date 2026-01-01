@@ -25,6 +25,13 @@
                     <li><a href="#favoritos" class="nav-link">Favoritos</a></li>
                 </ul>
             </nav>
+            <!-- Player de Louvores -->
+            <div class="praise-player">
+                <button id="praise-toggle" class="praise-btn" onclick="togglePraisePlayer()">🎵 Louvores 24h</button>
+                <div id="praise-player" class="praise-player-hidden">
+                    <iframe width="0" height="0" src="https://www.youtube.com/embed/xvGSK2t7ucA?autoplay=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -359,7 +366,7 @@
     <section id="novo-testamento" class="content-section">
         <div class="container">
             <h2 class="section-title">✨ Novo Testamento</h2>
-            <div class="filter-buttons">
+            <div class="filter-buttons" style="display: none;">
                 <button class="filter-btn active" onclick="filterStories('all', 'novo')">Todos</button>
                 <button class="filter-btn" onclick="filterStories('Lucas', 'novo')">Lucas</button>
                 <button class="filter-btn" onclick="filterStories('Marcos', 'novo')">Marcos</button>
@@ -476,17 +483,18 @@
             <div class="feedback-box">
                 <h3 class="feedback-title">💬 Compartilhe Seu Feedback</h3>
                 <p class="feedback-description">Sua opinião é muito importante! Nos ajude a melhorar este projeto compartilhando suas sugestões e comentários.</p>
-                <form class="feedback-form" id="feedback-form" action="https://formspree.io/f/mgovoydn" method="POST">
+                <form class="feedback-form" id="feedback-form" onsubmit="submitFeedback(event)">
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Seu nome" required>
+                        <input type="text" name="name" id="feedback-name" placeholder="Seu nome" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Seu e-mail" required>
+                        <input type="email" name="email" id="feedback-email" placeholder="Seu e-mail" required>
                     </div>
                     <div class="form-group">
-                        <textarea name="message" placeholder="Sua mensagem ou sugestão..." required></textarea>
+                        <textarea name="message" id="feedback-message" placeholder="Sua mensagem ou sugestão..." required></textarea>
                     </div>
                     <button type="submit" class="feedback-btn">Enviar Feedback</button>
+                    <div id="feedback-response" class="feedback-response"></div>
                 </form>
                 <p class="feedback-note">Seus dados serão utilizados apenas para responder seu feedback.</p>
             </div>

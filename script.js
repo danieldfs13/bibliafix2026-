@@ -570,3 +570,65 @@ window.onclick = function(event) {
         closePrintGallery();
     }
 }
+
+
+// ===== FEEDBACK COM AJAX =====
+function submitFeedback(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('feedback-name').value;
+    const email = document.getElementById('feedback-email').value;
+    const message = document.getElementById('feedback-message').value;
+    const responseDiv = document.getElementById('feedback-response');
+    
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('message', message);
+    
+    fetch('https://formspree.io/f/mgovoydn', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            responseDiv.innerHTML = '✅ Feedback enviado com sucesso! Obrigado por sua mensagem.';
+            responseDiv.classList.add('success');
+            document.getElementById('feedback-form').reset();
+            setTimeout(() => {
+                responseDiv.innerHTML = '';
+                responseDiv.classList.remove('success');
+            }, 5000);
+        } else {
+            responseDiv.innerHTML = '❌ Erro ao enviar feedback. Tente novamente.';
+            responseDiv.classList.add('error');
+        }
+    })
+    .catch(error => {
+        responseDiv.innerHTML = '❌ Erro ao enviar feedback. Tente novamente.';
+        responseDiv.classList.add('error');
+    });
+}
+
+// ===== PLAYER DE LOUVORES =====
+let praisePlayerOpen = false;
+
+function togglePraisePlayer() {
+    const player = document.getElementById('praise-player');
+    const button = document.getElementById('praise-toggle');
+    
+    praisePlayerOpen = !praisePlayerOpen;
+    
+    if (praisePlayerOpen) {
+        player.classList.remove('praise-player-hidden');
+        player.classList.add('praise-player-visible');
+        button.classList.add('active');
+    } else {
+        player.classList.remove('praise-player-visible');
+        player.classList.add('praise-player-hidden');
+        button.classList.remove('active');
+    }
+}
