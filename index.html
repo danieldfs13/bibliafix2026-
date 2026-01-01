@@ -42,6 +42,78 @@
         </div>
     </section>
 
+    <!-- Versículo do Dia -->
+    <section class="verse-section">
+        <div class="container">
+            <div class="verse-box">
+                <h3 class="verse-title">✨ Versículo do Dia</h3>
+                <p class="verse-text" id="daily-verse">"Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele creia não pereça, mas tenha a vida eterna." - João 3:16</p>
+                <p class="verse-reference" id="verse-reference">João 3:16</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Atividades -->
+    <section class="activities-section">
+        <div class="container">
+            <h2 class="section-title">🎨 Atividades Divertidas</h2>
+            <p class="activities-subtitle">Aprenda, pinte e se divirta com as histórias bíblicas!</p>
+            <div class="activities-grid">
+                <div class="activity-card">
+                    <div class="activity-icon">📚</div>
+                    <h3 class="activity-title">Ler com Perguntas</h3>
+                    <p class="activity-description">Leia as histórias e responda perguntas divertidas para testar seus conhecimentos!</p>
+                    <button class="activity-btn" onclick="alert('Em breve! Estamos preparando perguntas especiais para você.')">Começar</button>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-icon">🖍️</div>
+                    <h3 class="activity-title">Colorir Desenhos</h3>
+                    <p class="activity-description">Baixe desenhos bíblicos para colorir e deixe sua criatividade explorar!</p>
+                    <button class="activity-btn" onclick="downloadColoringPages()">Baixar PDF</button>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-icon">🖨️</div>
+                    <h3 class="activity-title">Imprimir Histórias</h3>
+                    <p class="activity-description">Imprima as histórias em formato de livro para ler com sua família!</p>
+                    <button class="activity-btn" onclick="printStories()">Imprimir</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compartilhamento -->
+    <section class="share-section">
+        <div class="container">
+            <h2 class="section-title">📢 Compartilhe com Seus Amigos</h2>
+            <p class="share-subtitle">Ajude a divulgar este projeto abençoado para mais famílias!</p>
+            <div class="share-content">
+                <div class="share-buttons">
+                    <a href="https://wa.me/?text=Confira%20o%20Bíblia%20Flix!%20Histórias%20bíblicas%20animadas%20para%20crianças%20https://danieldfs13.github.io/bibliafix2026-/" target="_blank" class="share-btn whatsapp">
+                        <span class="share-icon">💬</span>
+                        <span class="share-text">WhatsApp</span>
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://danieldfs13.github.io/bibliafix2026-/" target="_blank" class="share-btn facebook">
+                        <span class="share-icon">👍</span>
+                        <span class="share-text">Facebook</span>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url=https://danieldfs13.github.io/bibliafix2026-/&text=Confira%20o%20Bíblia%20Flix!%20Histórias%20bíblicas%20para%20crianças" target="_blank" class="share-btn twitter">
+                        <span class="share-icon">🐦</span>
+                        <span class="share-text">Twitter</span>
+                    </a>
+                    <button class="share-btn copy" onclick="copyLink()">
+                        <span class="share-icon">📋</span>
+                        <span class="share-text">Copiar Link</span>
+                    </button>
+                </div>
+                <div class="qr-code">
+                    <h4>Escaneie o QR Code</h4>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://danieldfs13.github.io/bibliafix2026-/" alt="QR Code do Bíblia Flix" class="qr-image">
+                    <p class="qr-text">Compartilhe via QR Code</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Antigo Testamento -->
     <section id="antigo-testamento" class="content-section">
         <div class="container">

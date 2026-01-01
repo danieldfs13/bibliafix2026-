@@ -431,114 +431,67 @@ function initVisitorCounter() {
     }
 }
 
-// Inicializar formulário de feedback
-function initFeedbackForm() {
-    const form = document.getElementById('feedback-form');
-    if (!form) return;
+// Executar ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    initVisitorCounter();
+});
+
+
+
+
+// Versículos do Dia
+const dailyVerses = [
+    { text: "\"Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele creia não pereça, mas tenha a vida eterna.\"", reference: "João 3:16" },
+    { text: "\"Confie no Senhor de todo o seu coração e não se apoie em seu próprio entendimento.\"", reference: "Provérbios 3:5" },
+    { text: "\"Porque nele vivemos, nos movemos e existimos, como também alguns dos vossos poetas disseram: Pois somos também sua geração.\"", reference: "Atos 17:28" },
+    { text: "\"Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.\"", reference: "Mateus 11:28" },
+    { text: "\"Porque o Senhor é bom; a sua misericórdia dura para sempre, e a sua fidelidade por todas as gerações.\"", reference: "Salmos 100:5" },
+    { text: "\"Mas a graça do Senhor Jesus Cristo, e o amor de Deus, e a comunhão do Espírito Santo sejam com todos vós.\"", reference: "2 Coríntios 13:14" },
+    { text: "\"Portanto, meus amados irmãos, sede firmes, inabaláveis, sempre abundantes na obra do Senhor, sabendo que o vosso trabalho não é vão no Senhor.\"", reference: "1 Coríntios 15:58" },
+    { text: "\"Porque Deus não nos deu espírito de covardia, mas de poder, de amor e de moderação.\"", reference: "2 Timóteo 1:7" }
+];
+
+// Inicializar Versículo do Dia
+function initDailyVerse() {
+    const today = new Date().getDate();
+    const verseIndex = today % dailyVerses.length;
+    const verse = dailyVerses[verseIndex];
     
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const name = form.querySelector('input[name="name"]').value;
-        const email = form.querySelector('input[name="email"]').value;
-        const message = form.querySelector('textarea[name="message"]').value;
-        
-        // Salvar feedback no localStorage
-        let feedbacks = JSON.parse(localStorage.getItem('bibliaFlixFeedbacks')) || [];
-        feedbacks.push({
-            name: name,
-            email: email,
-            message: message,
-            date: new Date().toLocaleString('pt-BR')
-        });
-        localStorage.setItem('bibliaFlixFeedbacks', JSON.stringify(feedbacks));
-        
-        // Mostrar mensagem de sucesso
-        const btn = form.querySelector('.feedback-btn');
-        const originalText = btn.textContent;
-        btn.textContent = '✓ Feedback enviado com sucesso!';
-        btn.style.background = '#4ECDC4';
-        
-        // Limpar formulário
-        form.reset();
-        
-        // Restaurar botão
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = '';
-        }, 3000);
-        
-        // Enviar para Formspree (opcional - requer configuração)
-        // Você pode descomentar e configurar com seu endpoint do Formspree
-        /*
-        fetch('https://formspree.io/f/YOUR_FORM_ID', {
-            method: 'POST',
-            body: JSON.stringify({ name, email, message }),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        */
+    const verseElement = document.getElementById('daily-verse');
+    const referenceElement = document.getElementById('verse-reference');
+    
+    if (verseElement) {
+        verseElement.textContent = verse.text;
+    }
+    if (referenceElement) {
+        referenceElement.textContent = verse.reference;
+    }
+}
+
+// Copiar Link para Compartilhamento
+function copyLink() {
+    const link = "https://danieldfs13.github.io/bibliafix2026-/";
+    navigator.clipboard.writeText(link).then(() => {
+        alert("Link copiado para a área de transferência! 📋");
+    }).catch(() => {
+        alert("Não foi possível copiar o link. Tente novamente.");
     });
+}
+
+// Baixar Páginas para Colorir
+function downloadColoringPages() {
+    alert("Em breve! Estamos preparando um PDF com desenhos bíblicos para colorir. Volte em breve! 🎨");
+    // Aqui você pode adicionar um link para download de um PDF
+}
+
+// Imprimir Histórias
+function printStories() {
+    alert("Em breve! Estamos preparando um formato de livro para impressão. Volte em breve! 🖨️");
+    // Aqui você pode adicionar a funcionalidade de impressão
 }
 
 // Executar ao carregar a página
 document.addEventListener('DOMContentLoaded', function() {
     initVisitorCounter();
-    initFeedbackForm();
-});
-
-
-// Painel Administrativo
-function toggleAdminPanel() {
-    const adminPanel = document.getElementById('admin-panel');
-    adminPanel.classList.toggle('open');
-    
-    if (adminPanel.classList.contains('open')) {
-        updateAdminPanel();
-    }
-}
-
-function updateAdminPanel() {
-    // Atualizar contadores
-    const visitCount = localStorage.getItem('bibliaFlixVisitors') || 0;
-    const feedbacks = JSON.parse(localStorage.getItem('bibliaFlixFeedbacks')) || [];
-    
-    document.getElementById('admin-visitor-count').textContent = visitCount;
-    document.getElementById('admin-feedback-count').textContent = feedbacks.length;
-    
-    // Atualizar lista de feedbacks
-    const feedbacksList = document.getElementById('feedbacks-list');
-    
-    if (feedbacks.length === 0) {
-        feedbacksList.innerHTML = '<p style="color: #999; text-align: center;">Nenhum feedback ainda</p>';
-    } else {
-        feedbacksList.innerHTML = feedbacks.map((feedback, index) => `
-            <div class="feedback-item">
-                <p><strong>Nome:</strong> ${feedback.name}</p>
-                <p><strong>Email:</strong> ${feedback.email}</p>
-                <p><strong>Mensagem:</strong> ${feedback.message}</p>
-                <p style="color: #666; font-size: 0.8rem;"><strong>Data:</strong> ${feedback.date}</p>
-            </div>
-        `).join('');
-    }
-}
-
-// Atalho para abrir o painel administrativo (Ctrl + Shift + A)
-document.addEventListener('keydown', function(event) {
-    if (event.ctrlKey && event.shiftKey && event.key === 'A') {
-        event.preventDefault();
-        toggleAdminPanel();
-    }
-});
-
-// Atualizar painel quando um novo feedback é enviado
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('feedback-form');
-    if (form) {
-        const originalSubmit = form.onsubmit;
-        form.addEventListener('submit', function() {
-            setTimeout(() => {
-                updateAdminPanel();
-            }, 100);
-        });
-    }
+    initDailyVerse();
 });
